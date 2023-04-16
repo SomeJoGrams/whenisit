@@ -13,8 +13,8 @@ public class TransferDate {
     private final String timeZone;
 
     public TransferDate(String currentDateString, String timeZone){
-        this.timeZone = currentDateString;
-        this.currentDateString = timeZone;
+        this.currentDateString = currentDateString;
+        this.timeZone = timeZone;
     }
 
     public String getTimeZone(){

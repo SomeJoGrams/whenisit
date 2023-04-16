@@ -48,7 +48,7 @@ function requestDate(){
 function postDate(){
     return $.ajax({method: "POST",
             url: "http://localhost:8080/date",
-            data: {currentDateString:currentDate.toISOString(),timeZone:"UTC"}
+            data: {currentDateString:currentDate.toISOString(),timeZone:"UTC"} //  sends the time with zero utc offset
             })
 }
 
@@ -63,8 +63,9 @@ function postDate(){
 //})
 $(document).on("click","#requestButton",function() {
             postDate().then(function(data) {
-//               $('.calculatedDate').append(data.content);
-                $("#time1").text(data.date)
+                let receivedDate = new Date(data.date);
+                receivedDate.setUTCHours(data.utcoffsetHours); // TODO set time zone
+                $("#time1").text(receivedDate)
                 $("#zone1").text(data.timeZone)
                 console.log("received object");
                console.log(data)
