@@ -8,13 +8,17 @@
 //    });
 //});
 
-var optionsTrDate = { hour: 'numeric',minute: 'numeric', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',timeZone :"UTC"};
+var defaultFromTimeZone = "UTC" // TODO calculate it
+var defaultToTimeZone = "UTC"
 
-$("#jDatepicker").datepicker();
+var optionsTrDate = { hour: 'numeric',minute: 'numeric', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',timeZone :"UTC"};
 var options = { hour: 'numeric',minute: 'numeric', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
-// date picker code
+
 var currentDate = new Date();
+
+var selectedFromTimezone = defaultFromTimeZone;
+var selectedToTimezone = defaultToTimeZone;
 
 console.log("the date in utc zero format",currentDate.toISOString())
 $("#selectedDate").text(currentDate.toLocaleDateString("de-DE",options));
@@ -27,9 +31,6 @@ $( "#datepicker" ).datepicker("option","onSelect",function(date,obj) {
         currentDate.setMinutes(timeAndHours.getMinutes())
         $("#selectedDate").text(currentDate.toLocaleDateString("de-DE",options));
         })
-//(text,obj){ console.log(text)})
-                    // $("#selectedDate").text()
-//<!--    "de-DE");-->
 
     // select menu code
 $( "#city" )
@@ -37,7 +38,7 @@ $( "#city" )
   .selectmenu( "menuWidget" )
     .addClass( "overflow" );
 
-$( "#timezone" )
+$( "#toTimeZoneSelection" )
   .selectmenu()
   .selectmenu( "menuWidget" )
     .addClass( "overflow" );
@@ -47,15 +48,33 @@ $( "#hourSelection" )
  .selectmenu( "menuWidget" )
    .addClass( "overflow" );
 
-function updateUIDate(){
-    $("#selectedDate").text(currentDate.toLocaleDateString("de-DE",options));
-}
+$("#fromTimeZoneSelection")
+            .selectmenu()
+            .selectmenu("menuWidget")
+            .addClass("overflow");
+
+
 
 $("#hourSelection").on("selectmenuselect",
                         function(event,ui){
                               currentDate.setHours(ui.item.value);
                               updateUIDate();
                                     });
+
+$("#fromTimeZoneSelection").on("selectmenuselect",
+                        function(event,ui){
+                              selectedFromTimezone = ui.item.value;
+                                    });
+
+$("#toTimeZoneSelection").on("selectmenuselect",
+                        function(event,ui){
+                              selectedToTimezone = ui.item.value;
+                                    });
+
+
+function updateUIDate(){
+    $("#selectedDate").text(currentDate.toLocaleDateString("de-DE",options));
+}
 
 function requestDate(){
     return $.ajax({method: "GET",
@@ -66,10 +85,17 @@ function requestDate(){
 function postDate(){
     return $.ajax({method: "POST",
             url: "http://localhost:8080/date",
-            data: {currentDateString:currentDate.toISOString(),toTimeZone:"UTC",
-                        } //  sends the time with zero utc offset
+            data: {currentDateString:currentDate.toISOString(),toTimeZone:selectedToTimezone,//fromTimeZone:selectedFromTimezone,
+                    fromTimeZoneOffset:currentDate.getTimezoneOffset()
+                        } //  sends the time with zero utc offset!
             })
 }
+// new idea instead of sending the from time zone we send an offset
+// so the utc date, the offset and the goal date will be send
+// the the goal date is calculated by adding the offset on the server to the utc date
+// finally the goal date is calculated!
+// this way we don't have to use for the from offset
+
 
 //$(document).on("click","#requestButton",function() {
 //            requestDate().then(function(data) {
@@ -83,7 +109,7 @@ function postDate(){
 $(document).on("click","#requestButton",function() {
             postDate().then(function(data) {
                 let receivedDate = new Date(data.date);
-                optionsTrDate.timeZone = data.timeZone;
+                optionsTrDate.timeZone = "UTC"//set the value to UTC bc of possible missing implementations for other timezone
 //                receivedDate.setUTCHours(data.utcoffsetHours); // TODO set time zone
                 $("#time1").text(receivedDate.toLocaleDateString("de-DE",optionsTrDate));
                 $("#zone1").text(data.timeZone);
