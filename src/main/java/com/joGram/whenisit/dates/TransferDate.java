@@ -10,15 +10,15 @@ public class TransferDate {
     @NotNull
     private final String currentDateString;
     @NotNull
-    private final String timeZone;
+    private final String toTimeZone;
 
-    public TransferDate(String currentDateString, String timeZone){
+    public TransferDate(String currentDateString, String toTimeZone){
         this.currentDateString = currentDateString;
-        this.timeZone = timeZone;
+        this.toTimeZone = toTimeZone;
     }
 
     public String getTimeZone(){
-        return this.timeZone;
+        return this.toTimeZone;
     }
     public String getDate(){
         return this.currentDateString;

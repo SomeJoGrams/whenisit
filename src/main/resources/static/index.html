@@ -4,48 +4,87 @@
     <meta charset="UTF-8">
     <title>When is it?</title>
 <!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
+
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
     <script src="//code.jquery.com/jquery-1.12.4.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <link rel="stylesheet" href="base.css">
+
 </head>
 <body>
-<div id="datepicker"></div>
-
-    <div>
-        <p class="calculatedDate">The current date is:
-            <div id="selectedDate"></div>
-        </p>
-        to time zone
-        <label for="city">By City:</label>
-        <select name="city" id="city">
-            <option value="Peking">Peking</option>
-            <option value="Washington/Usa" selected>Washington</option>
-            <option value="Berlin">Berlin</option>
+<div class="row">
+<div class="column">
+    <div id="datepicker"></div>
+    <div id="timeSelection">
+    <label for="hourSelection">By Hour</label>
+        <select name="hourSelection" id="hourSelection">
+            <option value="00">00</option>
+            <option value="01">01</option>
+            <option value="02">02</option>
+            <option value="03">03</option>
+            <option value="04">04</option>
+            <option value="05">05</option>
+            <option value="06">06</option>
+            <option value="07">07</option>
+            <option value="08">08</option>
+            <option value="09">09</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            <option value="17">17</option>
+            <option value="18">18</option>
+            <option value="19">19</option>
+            <option value="20">20</option>
+            <option value="21">21</option>
+            <option value="22">22</option>
+            <option value="23">23</option>
         </select>
-
-        <label for="timezone">By TimeZone</label>
-        <select name="timeZone" id="timezone">
-            <option value="UTC">UTC</option>
-            <option value="GMT" selected>GMT</option>
-            <option value="GMT+1">GMT+1</option>
-        </select>
-
     </div>
-    <button id="requestButton">
-        Submit Date
-    </button>
-    <div id="resultDates">
-        the goal dates
-        <div id="date1" >
-            <div id="time1"></div>
-            <div id="zone1"></div>
+
+        <div>
+            <p class="calculatedDate">The current date is:
+                <div id="selectedDate"></div>
+            </p>
+            to time zone
+            <label for="city">By City:</label>
+            <select name="city" id="city">
+                <option value="Peking">Peking</option>
+                <option value="Washington/Usa" selected>Washington</option>
+                <option value="Berlin">Berlin</option>
+            </select>
+
+            <label for="timezone">By TimeZone</label>
+            <select name="timeZone" id="timezone">
+                <option value="UTC">UTC</option>
+                <option value="GMT" selected>GMT</option>
+                <option value="GMT+1">GMT+1</option>
+            </select>
+
+        </div>
+        <button id="requestButton">
+            Submit Date
+        </button>
+    </div>
+    <div class="column">
+        <div id="resultDates">
+            the goal dates
+            <div id="date1" >
+                <div id="time1"></div>
+                <div id="zone1"></div>
+            </div>
         </div>
     </div>
+</div>
 
 
-    <script src="index.js">
-    </script>
 
 
+<script src="index.js">
+</script>
 </body>
 </html>
