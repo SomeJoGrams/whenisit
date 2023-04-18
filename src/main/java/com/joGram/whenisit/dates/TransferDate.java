@@ -14,14 +14,18 @@ public class TransferDate {
     @NotNull
     private final String toTimeZone;
     @NotNull
-    private final String fromTimeZoneOffset;
+    private final String fromTimeZone;
+
+    @NotNull
+    private final String fromUTCOffset;
 
 
 
-    public TransferDate(String currentDateString, String toTimeZone,String fromTimeZoneOffset){
+    public TransferDate(String currentDateString, String toTimeZone,String fromTimeZone,String fromUTCOffset){
         this.currentDateString = currentDateString;
         this.toTimeZone = toTimeZone;
-        this.fromTimeZoneOffset = fromTimeZoneOffset;
+        this.fromTimeZone = fromTimeZone;
+        this.fromUTCOffset = fromUTCOffset;
     }
 
     public String getTimeZone(){
@@ -31,11 +35,11 @@ public class TransferDate {
         return this.currentDateString;
     }
 
-//    public String getFromTimeZone() {
-//        return this.fromTimeZone;
-//    }
+    public String getFromTimeZone() {
+        return this.fromTimeZone;
+    }
 
-    public int getFromOffset() {
-        return Integer.parseInt(fromTimeZoneOffset) * 60 * 1000;
+    public long getFromOffset() {
+        return Long.parseLong(fromUTCOffset);
     }
 }

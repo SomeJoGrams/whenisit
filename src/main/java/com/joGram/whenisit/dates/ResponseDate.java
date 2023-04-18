@@ -6,10 +6,10 @@ import java.util.TimeZone;
 public class ResponseDate {
 
     private String dateString;
-    private TimeZone inputTimeZone;
+    private String inputTimeZone;
 
 
-    public ResponseDate(String dateString,TimeZone timeZone){
+    public ResponseDate(String dateString,String timeZone){
         this.dateString = dateString;
         this.inputTimeZone = timeZone;
     }
@@ -20,11 +20,11 @@ public class ResponseDate {
     }
 
     public String getTimeZone(){
-        return inputTimeZone.getID();
+        return inputTimeZone;
     }
 
-    public int getUTCOffsetHours(){
-        return inputTimeZone.getRawOffset() / 1000 / 60 / 60 ;
-    }
+//    public int getUTCOffsetHours(){ // TODO use zone id
+//        return inputTimeZone.getRawOffset() / 1000 / 60 / 60 ;
+//    }
 
 }

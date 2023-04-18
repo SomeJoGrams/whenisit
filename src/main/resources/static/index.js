@@ -53,7 +53,7 @@ $("#fromTimeZoneSelection")
             .selectmenu("menuWidget")
             .addClass("overflow");
 
-
+console.log($("#fromTimeZoneSelection").selectmenu())
 
 $("#hourSelection").on("selectmenuselect",
                         function(event,ui){
@@ -66,10 +66,25 @@ $("#fromTimeZoneSelection").on("selectmenuselect",
                               selectedFromTimezone = ui.item.value;
                                     });
 
+function addDefaultOnRefresh($jSelectmenu){
+    const $evtChange = $jSelectmenu.on("change", function(event,ui){
+    $jSelectmenu.selectmenu("refresh")
+    });
+    $evtChange.val(defaultFromTimeZone).change()
+}
+
+
+
+
+// update the selected values on refresh to the defaults
+
 $("#toTimeZoneSelection").on("selectmenuselect",
                         function(event,ui){
                               selectedToTimezone = ui.item.value;
                                     });
+
+addDefaultOnRefresh($("#fromTimeZoneSelection"))
+addDefaultOnRefresh($("#toTimeZoneSelection"))
 
 
 function updateUIDate(){
@@ -85,8 +100,8 @@ function requestDate(){
 function postDate(){
     return $.ajax({method: "POST",
             url: "http://localhost:8080/date",
-            data: {currentDateString:currentDate.toISOString(),toTimeZone:selectedToTimezone,//fromTimeZone:selectedFromTimezone,
-                    fromTimeZoneOffset:currentDate.getTimezoneOffset()
+            data: {currentDateString:currentDate.toISOString(),toTimeZone:selectedToTimezone,fromTimeZone:selectedFromTimezone,
+                    fromUTCOffset:currentDate.getTimezoneOffset()
                         } //  sends the time with zero utc offset!
             })
 }
