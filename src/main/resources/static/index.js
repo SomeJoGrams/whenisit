@@ -119,7 +119,10 @@ function updateUIDate(){
 
 function requestDate(){
     return $.ajax({method: "GET",
-            url: "http://localhost:8080/date"
+            url: "http://localhost:8080/date",
+            data: {currentDateString:currentDate.toISOString(),toTimeZone:selectedToTimezone,fromTimeZone:selectedFromTimezone,
+                                fromUTCOffset:currentDate.getTimezoneOffset()
+                        }
             })
 }
 
@@ -148,7 +151,7 @@ function postDate(){
 //            });
 //})
 $(document).on("click","#requestButton",function() {
-            postDate().then(function(data) {
+            requestDate().then(function(data) {
                 let receivedDate = new Date(data.date);
                 optionsTrDate.timeZone = "UTC"//set the value to UTC bc of possible missing implementations for other timezone
 //                receivedDate.setUTCHours(data.utcoffsetHours); // TODO set time zone
