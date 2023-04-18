@@ -46,13 +46,15 @@
         </select>
 
         <div>
-            <label for="fromTimeZoneSelection">from time zone</label>
-                    <select name="fromTimeZoneSelection" id="fromTimeZoneSelection">
-                        <option value="UTC" selected>UTC</option>
-                        <option value="GMT">GMT</option>
-                        <option value="GMT+1">GMT+1</option>
-                        <option value="GMT+2">GMT+2</option>
-                    </select>
+            <label for="fromTimeZoneSelection">from time zone:</label>
+                <input id="fromTimeZoneSelection">
+<!--            <label for="fromTimeZoneSelection">from time zone</label>-->
+<!--                    <select name="fromTimeZoneSelection" id="fromTimeZoneSelection">-->
+<!--                        <option value="UTC" selected>UTC</option>-->
+<!--                        <option value="GMT">GMT</option>-->
+<!--                        <option value="GMT+1">GMT+1</option>-->
+<!--                        <option value="GMT+2">GMT+2</option>-->
+<!--                    </select>-->
         </div>
 
     </div>
@@ -61,20 +63,23 @@
             <p class="calculatedDate">The current date is:
                 <div id="selectedDate"></div>
             </p>
-            to time zone
-            <label for="city">By City:</label>
-            <select name="city" id="city">
-                <option value="Peking">Peking</option>
-                <option value="Washington/Usa" selected>Washington</option>
-                <option value="Berlin">Berlin</option>
-            </select>
+            <div>
+            <label for="toTimeZoneSelection">to time zone:</label>
+                <input id="toTimeZoneSelection">
+            </div>
+<!--            <label for="city">By City:</label>-->
+<!--            <select name="city" id="city">-->
+<!--                <option value="Peking">Peking</option>-->
+<!--                <option value="Washington/Usa" selected>Washington</option>-->
+<!--                <option value="Berlin">Berlin</option>-->
+<!--            </select>-->
 
-            <label for="toTimeZoneSelection">By TimeZone</label>
-            <select name="timeZone" id="toTimeZoneSelection">
-                <option value="UTC" selected>UTC</option>
-                <option value="GMT" >GMT</option>
-                <option value="GMT+1">GMT+1</option>
-            </select>
+<!--            <label for="toTimeZoneSelection">By TimeZone</label>-->
+<!--            <select name="timeZone" id="toTimeZoneSelection">-->
+<!--                <option value="UTC" selected>UTC</option>-->
+<!--                <option value="GMT" >GMT</option>-->
+<!--                <option value="GMT+1">GMT+1</option>-->
+<!--            </select>-->
 
         </div>
         <button id="requestButton">

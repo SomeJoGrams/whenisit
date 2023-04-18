@@ -33,27 +33,36 @@ $( "#datepicker" ).datepicker("option","onSelect",function(date,obj) {
         })
 
     // select menu code
-$( "#city" )
-  .selectmenu()
-  .selectmenu( "menuWidget" )
-    .addClass( "overflow" );
+//$( "#city" )
+//  .selectmenu()
+//  .selectmenu( "menuWidget" )
+//    .addClass( "overflow" );
 
-$( "#toTimeZoneSelection" )
-  .selectmenu()
-  .selectmenu( "menuWidget" )
-    .addClass( "overflow" );
+//$( "#toTimeZoneSelection" )
+//  .selectmenu()
+//  .selectmenu( "menuWidget" )
+//    .addClass( "overflow" );
 
 $( "#hourSelection" )
  .selectmenu()
  .selectmenu( "menuWidget" )
    .addClass( "overflow" );
 
-$("#fromTimeZoneSelection")
-            .selectmenu()
-            .selectmenu("menuWidget")
-            .addClass("overflow");
+//$("#fromTimeZoneSelection")
+//            .selectmenu()
+//            .selectmenu("menuWidget")
+//            .addClass("overflow");
 
-console.log($("#fromTimeZoneSelection").selectmenu())
+var timeZoneSelection = ["GMT","UTC","GMT+1"] // TODO request dynamically
+
+$("#fromTimeZoneSelection")
+            .autocomplete({source: timeZoneSelection})
+
+$( "#toTimeZoneSelection" )
+            .autocomplete({source: timeZoneSelection})
+
+//
+//console.log($("#fromTimeZoneSelection").selectmenu())
 
 $("#hourSelection").on("selectmenuselect",
                         function(event,ui){
@@ -61,16 +70,33 @@ $("#hourSelection").on("selectmenuselect",
                               updateUIDate();
                                     });
 
-$("#fromTimeZoneSelection").on("selectmenuselect",
+//$("#fromTimeZoneSelection").on("selectmenuselect",
+//                        function(event,ui){
+//                              selectedFromTimezone = ui.item.value;
+//                                    });
+
+$("#fromTimeZoneSelection").on("autocompleteselect",
                         function(event,ui){
                               selectedFromTimezone = ui.item.value;
                                     });
 
+$("#toTimeZoneSelection").on("autocompleteselect",
+                        function(event,ui){
+                              selectedToTimezone = ui.item.value;
+                                    });
+
+//function addDefaultOnRefresh($jSelectmenu){
+//    const $evtChange = $jSelectmenu.on("change", function(event,ui){
+//    $jSelectmenu.selectmenu("refresh")
+//    });
+//    $evtChange.val(defaultFromTimeZone).change()
+//}
+
 function addDefaultOnRefresh($jSelectmenu){
-    const $evtChange = $jSelectmenu.on("change", function(event,ui){
-    $jSelectmenu.selectmenu("refresh")
-    });
-    $evtChange.val(defaultFromTimeZone).change()
+    //const $evtChange = $jSelectmenu.on("change", function(event,ui){
+    //$jSelectmenu.autocomplete("refresh")
+    //});
+    $jSelectmenu.val(defaultFromTimeZone);//.change()
 }
 
 
@@ -78,10 +104,10 @@ function addDefaultOnRefresh($jSelectmenu){
 
 // update the selected values on refresh to the defaults
 
-$("#toTimeZoneSelection").on("selectmenuselect",
-                        function(event,ui){
-                              selectedToTimezone = ui.item.value;
-                                    });
+//$("#toTimeZoneSelection").on("selectmenuselect",
+//                        function(event,ui){
+//                              selectedToTimezone = ui.item.value;
+//                                    });
 
 addDefaultOnRefresh($("#fromTimeZoneSelection"))
 addDefaultOnRefresh($("#toTimeZoneSelection"))
