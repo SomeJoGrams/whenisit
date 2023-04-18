@@ -126,8 +126,11 @@ $(document).on("click","#requestButton",function() {
                 let receivedDate = new Date(data.date);
                 optionsTrDate.timeZone = "UTC"//set the value to UTC bc of possible missing implementations for other timezone
 //                receivedDate.setUTCHours(data.utcoffsetHours); // TODO set time zone
-                $("#time1").text(receivedDate.toLocaleDateString("de-DE",optionsTrDate));
-                $("#zone1").text(data.timeZone);
+                if (data.date.length != 0){
+                    createDate(currentDate.toLocaleDateString("de-DE",options),receivedDate.toLocaleDateString("de-DE",optionsTrDate),selectedFromTimezone,data.timeZone)
+                }
+//                $("#time1").text(receivedDate.toLocaleDateString("de-DE",optionsTrDate));
+//                $("#zone1").text(data.timeZone);
                 console.log("received object");
                console.log(data)
                , function(failData){
@@ -136,3 +139,28 @@ $(document).on("click","#requestButton",function() {
             });
 })
 
+var dateId = 0;
+
+
+function createDate(originalDate,time,fromZone,toZone){
+    let newId = "date" + dateId
+    let timeId = "time" + dateId
+    let zoneId = "zone" + dateId
+    let buttonId = dateId;
+    $("#resultDates").append("<div>" + //class=\"timeUnit>\n" +
+                                 "<div id=timeId>" + time + "</div>\n" +
+                                 "<div id=zoneId>from " + fromZone + " to " + toZone + "</div>" + "\n" +
+                                 "<div> from Time: " + originalDate + " </div>" + "\n" +
+                                 "<div>\n" +
+                                 "<button" + " class=\"closeButton\"> X </button>\n" +
+                                 "</div>\n" +
+                             "</div>")
+    $(".closeButton").button()
+    $(".closeButton").on("click", function(event,ui){
+           // remove parent div -> the whole element
+          $(event.currentTarget).parent().parent().remove()
+//         $(event.currentTarget).parent().remove(); // remove the ui element on click
+    })
+    dateId += 1;
+    // todo use format
+}

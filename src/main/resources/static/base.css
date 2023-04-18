@@ -9,3 +9,8 @@
   display: table;
   clear: both;
 }
+
+.scrollList{
+    overflow-y: auto;
+    height:calc(100vh - 0.05*100vh)
+}
