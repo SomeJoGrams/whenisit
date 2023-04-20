@@ -126,14 +126,23 @@ function requestDate(){
             })
 }
 
-function postDate(){
-    return $.ajax({method: "POST",
-            url: "http://localhost:8080/date",
-            data: {currentDateString:currentDate.toISOString(),toTimeZone:selectedToTimezone,fromTimeZone:selectedFromTimezone,
-                    fromUTCOffset:currentDate.getTimezoneOffset()
-                        } //  sends the time with zero utc offset!
-            })
+function requestTimeZones(typedLetters){
+    return $.ajax({method:"GET",
+                    url: "http://localhost:8080/timezones",
+                    data: {typedLetters:typedLetters}
+                    }
+    )
 }
+
+
+//function postDate(){
+//    return $.ajax({method: "POST",
+//            url: "http://localhost:8080/date",
+//            data: {currentDateString:currentDate.toISOString(),toTimeZone:selectedToTimezone,fromTimeZone:selectedFromTimezone,
+//                    fromUTCOffset:currentDate.getTimezoneOffset()
+//                        } //  sends the time with zero utc offset!
+//            })
+//}
 // new idea instead of sending the from time zone we send an offset
 // so the utc date, the offset and the goal date will be send
 // the the goal date is calculated by adding the offset on the server to the utc date
@@ -151,12 +160,22 @@ function postDate(){
 //            });
 //})
 $(document).on("click","#requestButton",function() {
-            requestDate().then(function(data) {
+            if (selectedToTimezone === selectedFromTimezone){
+                console.log("the time stays the same") // TODO show dialog of some kind
+                return;
+            }
+            $.ajax({method: "GET",
+                        url: "http://localhost:8080/date",
+                        data: {currentDateString:currentDate.toISOString(),toTimeZone:selectedToTimezone,fromTimeZone:selectedFromTimezone,
+                                            fromUTCOffset:currentDate.getTimezoneOffset()
+                                    }
+                        }).then(function(data) {
                 let receivedDate = new Date(data.date);
                 optionsTrDate.timeZone = "UTC"//set the value to UTC bc of possible missing implementations for other timezone
 //                receivedDate.setUTCHours(data.utcoffsetHours); // TODO set time zone
                 if (data.date.length != 0){
-                    createDate(currentDate.toLocaleDateString("de-DE",options),receivedDate.toLocaleDateString("de-DE",optionsTrDate),selectedFromTimezone,data.timeZone)
+//                    createDate(currentDate.toLocaleDateString("de-DE",options),receivedDate.toLocaleDateString("de-DE",optionsTrDate),selectedFromTimezone,data.timeZone)
+                    createDate(currentDate.toLocaleDateString("de-DE",options),receivedDate.toLocaleString("de-DE",optionsTrDate),data.fromTimeZone,data.toTimeZone)
                 }
 //                $("#time1").text(receivedDate.toLocaleDateString("de-DE",optionsTrDate));
 //                $("#zone1").text(data.timeZone);
@@ -167,6 +186,8 @@ $(document).on("click","#requestButton",function() {
                }
             });
 })
+
+
 
 var dateId = 0;
 
@@ -193,3 +214,16 @@ function createDate(originalDate,time,fromZone,toZone){
     dateId += 1;
     // todo use format
 }
+
+requestTimeZones().then(function(data) {
+    console.log(data);
+    if (data.length != 0){
+        timeZoneSelection = data;
+        $("#fromTimeZoneSelection")
+                    .autocomplete("option","source", timeZoneSelection)
+
+        $( "#toTimeZoneSelection" )
+                    .autocomplete("option","source", timeZoneSelection)
+    }
+
+                    }, function(data){console.log("error in request")})

@@ -7,11 +7,13 @@ public class ResponseDate {
 
     private String dateString;
     private String inputTimeZone;
+    private String fromTimeZone;
 
 
-    public ResponseDate(String dateString,String timeZone){
+    public ResponseDate(String dateString,String timeZone,String fromTimeZone){
         this.dateString = dateString;
         this.inputTimeZone = timeZone;
+        this.fromTimeZone = fromTimeZone;
     }
 
 
@@ -19,8 +21,12 @@ public class ResponseDate {
         return dateString;
     }
 
-    public String getTimeZone(){
+    public String getToTimeZone(){
         return inputTimeZone;
+    }
+
+    public String getFromTimeZone(){
+        return fromTimeZone;
     }
 
 //    public int getUTCOffsetHours(){ // TODO use zone id
