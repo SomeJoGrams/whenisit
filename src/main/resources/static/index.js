@@ -53,7 +53,7 @@ $( "#hourSelection" )
 //            .selectmenu("menuWidget")
 //            .addClass("overflow");
 
-var timeZoneSelection = ["GMT","UTC","GMT+1"] // TODO request dynamically
+var timeZoneSelection = ["GMT","UTC","GMT+1"] // TODO request dynamically, fix
 
 $("#fromTimeZoneSelection")
             .autocomplete({source: timeZoneSelection})

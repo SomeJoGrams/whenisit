@@ -40,13 +40,15 @@ public class WhenisitApplication {
     public CommandLineRunner addTimeZones(TimeZonesRepository repository) {
         return (args) -> {
             // save a few customers
-            repository.save(new TimeZoneCity("Berlin", "GMT+1"));
+            //repository.save(new TimeZoneCity("Berlin", "GMT+1"));
 //            repository.saveAll(ZoneId.SHORT_IDS.keySet().stream()
 //                    .map(zoneId -> new TimeZoneCity(ZoneId.of.get(zoneId),zoneId))
 //                    .toList()
 //            );
             repository.saveAll(ZoneId.getAvailableZoneIds().stream()
-                    .map(zoneId -> new TimeZoneCity(zoneId,zoneId))
+                            .filter(zoneId -> zoneId.contains("/")).map(zoneId -> {
+                        return new TimeZoneCity(zoneId,zoneId);
+                    })
                     .toList()
             ); // TODO parse this better
             //ZoneId.of(cityOrSymbol).getDisplayName(TextStyle.NARROW, Locale.GERMAN)
