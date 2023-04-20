@@ -30,6 +30,7 @@ public class DateController {
     public String[] timeZones(){
         ArrayList<TimeZoneCity> x = new ArrayList();
         ArrayList<String> cities = new ArrayList<>();
+        //TODO seperate country and city names?, remove etc zone?
         for (TimeZoneCity el : timeZonesRepository.findAll()){
             cities.add(el.getCity());
         }
@@ -188,6 +189,8 @@ public class DateController {
             ResponseDate responseDate  = null;
 
             if (selectedClientDate != null) {
+                // TODO fix time zones with offsets like GMT+1 is interprested as GMT and then always with an additional hour
+
                 ZoneId zoneIdFrom = ZoneId.of(transferDate.getFromTimeZone());
                 ZoneId zoneIdTo = ZoneId.of(transferDate.getTimeZone());
 //                System.out.println(zoneId.getId());
