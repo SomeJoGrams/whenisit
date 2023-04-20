@@ -7,9 +7,11 @@
 //       $('.calculatedDate').append(data.content);
 //    });
 //});
+var timeZoneSelection = ["Europe/Berlin","America/Marigot","Asia/Tokyo"] // TODO request dynamically, fix
 
-var defaultFromTimeZone = "UTC" // TODO calculate it
-var defaultToTimeZone = "UTC"
+const defaultFromTimeZone = timeZoneSelection[0];
+const defaultToTimeZone = timeZoneSelection[0];
+
 
 var optionsTrDate = { hour: 'numeric',minute: 'numeric', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',timeZone :"UTC"};
 var options = { hour: 'numeric',minute: 'numeric', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -53,13 +55,18 @@ $( "#hourSelection" )
 //            .selectmenu("menuWidget")
 //            .addClass("overflow");
 
-var timeZoneSelection = ["GMT","UTC","GMT+1"] // TODO request dynamically, fix
+
 
 $("#fromTimeZoneSelection")
             .autocomplete({source: timeZoneSelection})
 
 $( "#toTimeZoneSelection" )
             .autocomplete({source: timeZoneSelection})
+
+$("#clearAll").button()
+$("#clearAll").on("click", function(event,ui){
+                           $("#resultDates >").remove()
+})
 
 //
 //console.log($("#fromTimeZoneSelection").selectmenu())
