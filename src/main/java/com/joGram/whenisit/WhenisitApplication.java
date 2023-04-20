@@ -46,7 +46,9 @@ public class WhenisitApplication {
 //                    .toList()
 //            );
             repository.saveAll(ZoneId.getAvailableZoneIds().stream()
-                            .filter(zoneId -> zoneId.contains("/")).map(zoneId -> {
+                            .filter(zoneId -> zoneId.contains("/"))
+                            .filter(zoneId -> !zoneId.startsWith(("Etc"))) // remove non city dates
+                        .map(zoneId -> {
                         return new TimeZoneCity(zoneId,zoneId);
                     })
                     .toList()

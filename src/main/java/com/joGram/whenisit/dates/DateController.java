@@ -162,7 +162,7 @@ public class DateController {
     @GetMapping("/date")
     public ResponseDate calculatedDate2(@Valid @ModelAttribute("TransferDate") TransferDate transferDate, BindingResult result){
         if (result.hasErrors()) {
-            System.out.println("found errors in date");
+//            System.out.println("found errors in date");
 //            result.getAllErrors().forEach(errorObj -> {
 //                System.out.println(errorObj.toString());
 //            });
@@ -178,6 +178,7 @@ public class DateController {
             // then calculate the to time zone and return it
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_INSTANT;
             dateTimeFormatter = dateTimeFormatter.withZone(ZoneOffset.UTC);
+
             try {
                 selectedClientDate = LocalDateTime.parse(transferDate.getDate(),dateTimeFormatter);
                 selectedClientDate = selectedClientDate.minusMinutes(transferDate.getFromOffset());
@@ -189,25 +190,29 @@ public class DateController {
             ResponseDate responseDate  = null;
 
             if (selectedClientDate != null) {
-                // TODO fix time zones with offsets like GMT+1 is interprested as GMT and then always with an additional hour
-
                 ZoneId zoneIdFrom = ZoneId.of(transferDate.getFromTimeZone());
                 ZoneId zoneIdTo = ZoneId.of(transferDate.getTimeZone());
+//                System.out.printf("toZoneid %1$s\n", zoneIdTo);
 //                System.out.println(zoneId.getId());
 //                System.out.println(zoneId1.getId());
 //                System.out.printf("same time zones? %1$b", ZoneId.of(transferDate.getFromTimeZone()).getId().equals(ZoneId.of(transferDate.getTimeZone()).getId()));
-                System.out.println("the selected time:");
-                System.out.println(selectedClientDate);
-                //ZonedDateTime wantedFromTime = ZonedDateTime.of()selectedClientDate.atZone(zoneIdFrom);
+//                System.out.println("the selected time:");
+//                System.out.println(selectedClientDate);
                 ZonedDateTime wantedFromTime = ZonedDateTime.of(selectedClientDate,zoneIdFrom);
 
-                System.out.println("just with changed zones");
-                System.out.println(wantedFromTime);
+//                System.out.println("just with changed zones");
+//                System.out.println(wantedFromTime);
+//                System.out.println(wantedFromTime.toLocalDateTime());
 
 
                 ZonedDateTime wantedToTime = wantedFromTime.withZoneSameInstant(zoneIdTo);
-                System.out.println("translated to goal time");
-                System.out.println(wantedToTime);
+//                ZonedDateTime wantedToTime2 = wantedFromTime.withZoneSameLocal(zoneIdTo);
+//                wantedToTime = wantedFromTime.toLocalDateTime().atZone(zoneIdTo);
+//                System.out.println("translated to goal time");
+//                System.out.println(wantedToTime);
+//                System.out.println("translated to goal time2");
+//                System.out.println(wantedToTime2);
+
 //                LocalDateTime wantedTimeNoOffset = wantedToTime.toLocalDateTime();
 
                 // idea to add the offset again?
@@ -216,12 +221,7 @@ public class DateController {
 
                 DateTimeFormatter outDateTimeFormatter = DateTimeFormatter.ISO_INSTANT;
                 String resultTime = wantedToTime.toLocalDateTime().atZone(ZoneId.of("UTC")).format(outDateTimeFormatter);
-                System.out.println(resultTime);
-
-
-                String toTimeZoneWithCity;
-                String fromTimeZoneWithCity;
-
+//                System.out.println(resultTime);
 
                 responseDate = new ResponseDate(resultTime, wantedToTime.getZone().toString(), wantedFromTime.getZone().toString());
             }
