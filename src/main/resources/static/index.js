@@ -16,7 +16,6 @@ const defaultToTimeZone = timeZoneSelection[0];
 var optionsTrDate = { hour: 'numeric',minute: 'numeric', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',timeZone :"UTC"};
 var options = { hour: 'numeric',minute: 'numeric', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
-
 var currentDate = new Date();
 
 var selectedFromTimezone = defaultFromTimeZone;
@@ -115,7 +114,7 @@ $("#toTimeZoneSelection").on("autocompleteselect",
                         function(event,ui){
                               selectedToTimezone = ui.item.value;
                               requestSubmission();
-                              
+
                                     });
 
 //function addDefaultOnRefresh($jSelectmenu){
@@ -209,7 +208,7 @@ function requestSubmission(){
                             let receivedDate = new Date(data.date);
                             optionsTrDate.timeZone = "UTC";//set the value to UTC bc of possible missing implementations for other timezone
                             if (data.date.length != 0){
-                                createDate(currentDate.toLocaleDateString("de-DE",options),receivedDate.toLocaleString("de-DE",optionsTrDate),data.fromTimeZone,data.toTimeZone)
+                                createDate(currentDate,receivedDate,currentDate.toLocaleDateString("de-DE",options),receivedDate.toLocaleString("de-DE",optionsTrDate),data.fromTimeZone,data.toTimeZone)
                             }
                             console.log("received object");
                             console.log(data)
@@ -221,27 +220,62 @@ function requestSubmission(){
 //$()
 
 $(document).on("click","#requestButton",requestSubmission);
-$(fromTimeZoneSelection).on("")
+
 
 
 var dateId = 0;
 
 
-function createDate(originalDate,time,fromZone,toZone){
+function createDate(fromDate,toDate,originalDate,time,fromZone,toZone){
     let newId = "date" + dateId
     let timeId = "time" + dateId
     let zoneId = "zone" + dateId
     let buttonId = dateId;
     let timeGoalClass = "class=timeGoalClass";
     let zoneGoalClass = "class=zoneGoalClass";
+    console.log(fromDate.toLocale)
+    console.log(toDate)
     $("#resultDates").append("<div class=\"timeUnit\">\n" +
                                  "<div id=timeId " + timeGoalClass + ">" + time + "</div>\n" +
                                  "<div id=zoneId " + zoneGoalClass + "> from " + fromZone + " to " + toZone + "</div>" + "\n" +
                                  "<div> from Time: " + originalDate + " </div>" + "\n" +
                                  "<div>\n" +
-                                 "<button" + " class=\"closeButton\"> X </button>\n" +
+                                        "<span style=\"display:flex\">" +
+                                         "<div>"+
+                                             "<div" + " id=\"clockFrom" + dateId +"\" class=\"clockJo\">\n" +
+                                                 "<div class=\"clockJoCenter\"></div>" +
+                                                 "<div class=\"pointerHand longPointer\"></div>" +
+                                                 "<div class=\"pointerHand shortPointer\"></div>" +
+                                             "</div>" +
+                                         "</div>" +
+                                         "<div>"+
+                                              "<div" + " id=\"clockTo" + dateId +"\" class=\"clockJo\">\n" +
+                                                  "<div class=\"clockJoCenter\"></div>" +
+                                                  "<div class=\"pointerHand longPointer\"></div>" +
+                                                  "<div class=\"pointerHand shortPointer\"></div>" +
+                                              "</div>" +
+                                          "</div>" +
+                                          "</span>" +
+                                "<button" + " class=\"closeButton\"> X </button>\n" +
                                  "</div>\n" +
-                             "</div>")
+                             "</div>");
+    createClock($("#clockFrom" + dateId))
+    // TODO maybe remove whitespaces
+    let optionsShort = { hour: 'numeric',minute: 'numeric'};
+    let cutOffFromDate = fromDate.toLocaleDateString("de-DE",optionsShort)
+    cutOffFromDate = cutOffFromDate.substring(cutOffFromDate.length - 5,cutOffFromDate.length)
+    optionsShort.timeZone = "UTC" // set the timezone only for the received date(otherwise the from time is to early)
+    let cutOffToDate = toDate.toLocaleString("de-DE",optionsShort)
+    cutOffToDate = cutOffToDate.substring(cutOffToDate.length - 5,cutOffToDate.length)
+    console.log(cutOffToDate,toDate.toLocaleString("de-DE",optionsShort))
+
+    let localeDateFromHours = cutOffFromDate.substring(0,2)
+    let localeDateFromMinutes = cutOffFromDate.substring(3,5)
+    let localDateToHours = cutOffToDate.substring(0,2)
+    let localeDateToMinutes =  cutOffToDate.substring(3,5)
+    setClockTime($("#clockFrom" + dateId), localeDateFromHours,localeDateFromMinutes);
+    createClock($("#clockTo" + dateId))
+    setClockTime($("#clockTo" + dateId), localDateToHours,localeDateToMinutes);
     $(".closeButton").button()
     $(".closeButton").on("click", function(event,ui){
            // remove parent div -> the whole element
@@ -262,5 +296,34 @@ requestTimeZones().then(function(data) {
         $( "#toTimeZoneSelection" )
                     .autocomplete("option","source", timeZoneSelection)
     }
-
                     }, function(data){console.log("error in request")})
+
+
+
+const hourAmount = 12;
+const minuteAmount = 60;
+
+const amountOfLines = 12;
+const circleDeg = 360;
+
+function createClock(clockJQElement){
+    for (let curDeg = circleDeg; curDeg > 0; curDeg-=circleDeg/amountOfLines){
+        let div = document.createElement("div")
+        div.classList.add("timeLine")
+        div.style.rotate = curDeg + "deg"
+        clockJQElement.append(div)
+    }
+    setClockTime(clockJQElement,0,0)
+
+}
+
+
+// the clock element should be the html element with the basic clockJo class
+function setClockTime(clockElement,timeHours,timeMinutes){
+    // 180 deg added to set the rotation to the start 0:00
+    let hourDeg = 180 + (360 / hourAmount) * timeHours
+    let minuteDeg = 180 + (360 / minuteAmount) * timeMinutes
+    clockElement.get(0).style.setProperty("--shortPointerDeg",hourDeg +"deg");
+    clockElement.get(0).style.setProperty("--longPointerDeg",minuteDeg +"deg");
+
+}
