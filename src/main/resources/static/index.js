@@ -50,6 +50,16 @@ $( "#hourSelection" )
  .selectmenu( "menuWidget" )
    .addClass( "overflow" );
 
+$( "#minuteSelection" )
+ .selectmenu()
+ .selectmenu( "menuWidget" )
+   .addClass( "overflow" );
+
+
+$("#hourSelection-menu").css("height","calc(0.4*100vh)");
+
+$("#minuteSelection-menu").css("height","calc(0.4*100vh)");
+
 //$("#fromTimeZoneSelection")
 //            .selectmenu()
 //            .selectmenu("menuWidget")
@@ -73,9 +83,23 @@ $("#clearAll").on("click", function(event,ui){
 
 $("#hourSelection").on("selectmenuselect",
                         function(event,ui){
-                              currentDate.setHours(ui.item.value);
-                              updateUIDate();
+                          let currentSelection = ui.item.value;
+                          if (currentSelection == "currentTime"){
+                            currentDate = new Date();
+                          }
+                          else{
+                            currentDate.setHours(currentSelection);
+                          }
+                          updateUIDate();
                                     });
+
+$("#minuteSelection").on("selectmenuselect",
+                        function(event,ui){
+                        let currentSelection = ui.item.value;
+                        currentDate.setMinutes(currentSelection);
+                        updateUIDate();
+                                    });
+
 
 //$("#fromTimeZoneSelection").on("selectmenuselect",
 //                        function(event,ui){
@@ -90,6 +114,8 @@ $("#fromTimeZoneSelection").on("autocompleteselect",
 $("#toTimeZoneSelection").on("autocompleteselect",
                         function(event,ui){
                               selectedToTimezone = ui.item.value;
+                              requestSubmission();
+                              
                                     });
 
 //function addDefaultOnRefresh($jSelectmenu){
@@ -166,7 +192,9 @@ function requestTimeZones(typedLetters){
 //               }
 //            });
 //})
-$(document).on("click","#requestButton",function() {
+
+
+function requestSubmission(){
             if (selectedToTimezone === selectedFromTimezone){
                 console.log("the time stays the same") // TODO show dialog of some kind
                 return;
@@ -175,25 +203,25 @@ $(document).on("click","#requestButton",function() {
                         url: "http://localhost:8080/date",
                         data: {currentDateString:currentDate.toISOString(),toTimeZone:selectedToTimezone,fromTimeZone:selectedFromTimezone,
                                             fromUTCOffset:currentDate.getTimezoneOffset()
-                                    }
-                        }).then(function(data) {
-                let receivedDate = new Date(data.date);
-                optionsTrDate.timeZone = "UTC"//set the value to UTC bc of possible missing implementations for other timezone
-//                receivedDate.setUTCHours(data.utcoffsetHours); // TODO set time zone
-                if (data.date.length != 0){
-//                    createDate(currentDate.toLocaleDateString("de-DE",options),receivedDate.toLocaleDateString("de-DE",optionsTrDate),selectedFromTimezone,data.timeZone)
-                    createDate(currentDate.toLocaleDateString("de-DE",options),receivedDate.toLocaleString("de-DE",optionsTrDate),data.fromTimeZone,data.toTimeZone)
-                }
-//                $("#time1").text(receivedDate.toLocaleDateString("de-DE",optionsTrDate));
-//                $("#zone1").text(data.timeZone);
-                console.log("received object");
-               console.log(data)
-               , function(failData){
-                    console.log("error getting the request through")
-               }
-            });
-})
+                            }
+                        }).then(
+                        function(data) {
+                            let receivedDate = new Date(data.date);
+                            optionsTrDate.timeZone = "UTC";//set the value to UTC bc of possible missing implementations for other timezone
+                            if (data.date.length != 0){
+                                createDate(currentDate.toLocaleDateString("de-DE",options),receivedDate.toLocaleString("de-DE",optionsTrDate),data.fromTimeZone,data.toTimeZone)
+                            }
+                            console.log("received object");
+                            console.log(data)
+                            },function(failData){
+                            console.log("error getting the request through")
+                        })
+}
 
+//$()
+
+$(document).on("click","#requestButton",requestSubmission);
+$(fromTimeZoneSelection).on("")
 
 
 var dateId = 0;
@@ -204,9 +232,11 @@ function createDate(originalDate,time,fromZone,toZone){
     let timeId = "time" + dateId
     let zoneId = "zone" + dateId
     let buttonId = dateId;
-    $("#resultDates").append("<div>" + //class=\"timeUnit>\n" +
-                                 "<div id=timeId>" + time + "</div>\n" +
-                                 "<div id=zoneId>from " + fromZone + " to " + toZone + "</div>" + "\n" +
+    let timeGoalClass = "class=timeGoalClass";
+    let zoneGoalClass = "class=zoneGoalClass";
+    $("#resultDates").append("<div class=\"timeUnit\">\n" +
+                                 "<div id=timeId " + timeGoalClass + ">" + time + "</div>\n" +
+                                 "<div id=zoneId " + zoneGoalClass + "> from " + fromZone + " to " + toZone + "</div>" + "\n" +
                                  "<div> from Time: " + originalDate + " </div>" + "\n" +
                                  "<div>\n" +
                                  "<button" + " class=\"closeButton\"> X </button>\n" +
